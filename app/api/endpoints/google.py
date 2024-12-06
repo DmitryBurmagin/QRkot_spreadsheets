@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
-from app.core.google_config import get_google_client
+from app.core.google_client import get_service
 from app.core.user import current_superuser
 from app.crud.charity_project import charity_project_crud
 from app.services.google import (create_spreadsheet, set_user_permissions,
@@ -21,7 +21,7 @@ router = APIRouter()
 )
 async def create_projects_spreadsheet(
     session: AsyncSession = Depends(get_async_session),
-    wrapp_services: Aiogoogle = Depends(get_google_client),
+    wrapp_services: Aiogoogle = Depends(get_service),
 ):
     projects = await charity_project_crud.get_completed_project_by_rate(
         session
