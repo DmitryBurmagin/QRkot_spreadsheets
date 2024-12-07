@@ -20,21 +20,7 @@ class CRUDCharityProject(CRUDBase):
             .filter(CharityProject.fully_invested.is_(True))
         )
         projects = result.fetchall()
-        return CRUDCharityProject.process_projects(projects)
-
-    @staticmethod
-    def process_projects(projects):
-        return sorted(
-            [
-                {
-                    'name': project.name,
-                    'rate': str(project.rate),
-                    'description': project.description
-                }
-                for project in projects
-            ],
-            key=lambda x: x['rate']
-        )
+        return projects
 
 
 charity_project_crud = CRUDCharityProject(CharityProject)

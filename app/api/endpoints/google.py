@@ -26,19 +26,17 @@ async def create_projects_spreadsheet(
     """
     Создает новую электронную таблицу с информацией о завершенных проектах.
     """
+    projects = await charity_project_crud.get_completed_project_by_rate(
+        session
+    )
+    spreadsheet_id, spreadsheet_url = await create_spreadsheet(
+        wrapp_services
+    )
     try:
-        projects = await charity_project_crud.get_completed_project_by_rate(
-            session
-        )
-        spreadsheet_info = await create_spreadsheet(wrapp_services)
         await asyncio.gather(
-            set_user_permissions(
-                wrapp_services, spreadsheet_info['spreadsheetId']
-            ),
-            spreadsheet_update_values(
-                spreadsheet_info['spreadsheetId'], projects, wrapp_services
-            )
+            set_user_permissions(wrapp_services, spreadsheet_id),
+            spreadsheet_update_values(spreadsheet_id, projects, wrapp_services)
         )
-        return spreadsheet_info['spreadsheetUrl']
+        return spreadsheet_url
     except Exception as e:
-        return {'error': f'Произошла ошибка: {str(e)}'}
+        return {'error': f'Произошла ошибка: {e}'}

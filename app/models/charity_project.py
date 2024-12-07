@@ -14,8 +14,8 @@ class CharityProject(Base, CommonFields):
 
     def __repr__(self):
         base_repr = super().__repr__()
-        description_length = len(self.description) if self.description else 0
+        description_length = len(self.description)
         return (
             f'{base_repr}, name={self.name}, '
-            f'description_length={description_length}>'
+            f'description_length={description_length}'
         )

@@ -14,5 +14,5 @@ class Donation(Base, CommonFields):
         base_repr = super().__repr__()
         return (
             f'{base_repr}, user_id={self.user_id}, '
-            f'comment_length={len(self.comment) if self.comment else 0}>'
+            f'comment_length={len(self.comment)}'
         )
