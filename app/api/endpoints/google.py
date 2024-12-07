@@ -23,14 +23,22 @@ async def create_projects_spreadsheet(
     session: AsyncSession = Depends(get_async_session),
     wrapp_services: Aiogoogle = Depends(get_service),
 ):
-    projects = await charity_project_crud.get_completed_project_by_rate(
-        session
-    )
-    spreadsheet_id = await create_spreadsheet(wrapp_services)
-    await asyncio.gather(
-        set_user_permissions(wrapp_services, spreadsheet_id),
-        spreadsheet_update_values(spreadsheet_id, projects, wrapp_services)
-    )
-    await spreadsheet_update_values(spreadsheet_id, projects, wrapp_services)
-    print(f'https://docs.google.com/spreadsheets/d/{spreadsheet_id}')
-    return projects
+    """
+    Создает новую электронную таблицу с информацией о завершенных проектах.
+    """
+    try:
+        projects = await charity_project_crud.get_completed_project_by_rate(
+            session
+        )
+        spreadsheet_info = await create_spreadsheet(wrapp_services)
+        await asyncio.gather(
+            set_user_permissions(
+                wrapp_services, spreadsheet_info['spreadsheetId']
+            ),
+            spreadsheet_update_values(
+                spreadsheet_info['spreadsheetId'], projects, wrapp_services
+            )
+        )
+        return spreadsheet_info['spreadsheetUrl']
+    except Exception as e:
+        return {'error': f'Произошла ошибка: {str(e)}'}

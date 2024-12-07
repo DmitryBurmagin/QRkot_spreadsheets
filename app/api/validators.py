@@ -67,7 +67,7 @@ async def validate_project_update(
     return charity_project
 
 
-async def validate_project_not_invested(project: CharityProject) -> None:
+def validate_project_not_invested(project: CharityProject) -> None:
     """Проверяет, что проект не имеет вложенных средств."""
     if project.invested_amount > 0:
         raise HTTPException(

@@ -1,8 +1,8 @@
-"""init
+"""add validation for models
 
-Revision ID: 330bc8ca6b1c
+Revision ID: 744551650ab2
 Revises: 
-Create Date: 2024-12-02 04:28:20.270267
+Create Date: 2024-12-07 14:08:25.713114
 
 """
 import sqlalchemy as sa
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = '330bc8ca6b1c'
+revision = '744551650ab2'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -27,6 +27,8 @@ def upgrade():
     sa.Column('close_date', sa.DateTime(), nullable=True),
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('description', sa.Text(), nullable=False),
+    sa.CheckConstraint('full_amount > 0', name='check_full_amount_positive'),
+    sa.CheckConstraint('invested_amount <= full_amount', name='check_invested_amount'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
@@ -49,6 +51,8 @@ def upgrade():
     sa.Column('close_date', sa.DateTime(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('comment', sa.Text(), nullable=True),
+    sa.CheckConstraint('full_amount > 0', name='check_full_amount_positive'),
+    sa.CheckConstraint('invested_amount <= full_amount', name='check_invested_amount'),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

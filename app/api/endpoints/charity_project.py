@@ -8,7 +8,7 @@ from app.api.validators import (get_project_or_404,
                                 validate_project_update, validate_unique_name)
 from app.core.db import get_async_session
 from app.core.user import current_superuser
-from app.crud.charity_project import charity_project_crud
+from app.crud import charity_project_crud, donation_crud
 from app.schemas.charity_project import (CharityProjectCreate,
                                          CharityProjectResponse,
                                          CharityProjectUpdate)
@@ -29,10 +29,16 @@ async def create_project(
 ) -> CharityProjectResponse:
     """Создает новый благотворительный проект."""
     await validate_unique_name(project.name, session)
-    project = await charity_project_crud.create(project, session)
-    await process_investments(session)
-    await session.refresh(project)
-    return project
+    new_project = await charity_project_crud.create(project, session)
+    incomplete_projects = await charity_project_crud.fetch_uninvested(session)
+    incomplete_donations = await donation_crud.fetch_uninvested(session)
+    updated_projects = process_investments(
+        incomplete_donations, incomplete_projects
+    )
+    session.add_all(updated_projects + incomplete_donations)
+    await session.commit()
+    await session.refresh(new_project)
+    return new_project
 
 
 @router.get(
@@ -86,5 +92,5 @@ async def remove_project(
     """Удаляет благотворительный проект."""
     project = await get_project_or_404(
         project_id, session)
-    await validate_project_not_invested(project)
+    validate_project_not_invested(project)
     return await charity_project_crud.remove(project, session)

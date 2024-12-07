@@ -21,7 +21,7 @@ router.include_router(
 users_router = fastapi_users.get_users_router(UserRead, UserUpdate)
 users_router.routes = [
     route for route in users_router.routes if not (
-        route.path == "/users/me" and "DELETE" in route.methods
+        route.path == '/users/me' and 'DELETE' in route.methods
     )
 ]
 router.include_router(

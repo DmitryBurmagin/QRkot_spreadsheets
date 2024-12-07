@@ -2,7 +2,12 @@ from datetime import datetime
 
 from app.core.config import settings
 
-FORMAT = '%Y/%m/%d %H:%M:%S'
+DATE_FORMAT = '%Y/%m/%d %H:%M:%S'
+REPORT_DATE = datetime.now().strftime(DATE_FORMAT)
+SPREADSHEET_URL_TEMPLATE = 'https://docs.google.com/spreadsheets/d/{}/edit'
+
+MIN_SIZE = 100
+MAX_SIZE = 1000
 
 TABLE_HEADER = [
     ['Отчет от'],
@@ -15,7 +20,7 @@ DISCOVER_DRIVE_V3 = ('drive', 'v3')
 
 SPREADSHEET_PROPERTIES = {
     'properties': {
-        'title': f'Отчет от {datetime.now().strftime(FORMAT)}',
+        'title': 'Отчет от {datetime.now().strftime(DATE_FORMAT)}',
         'locale': 'ru_RU',
     },
     'sheets': {

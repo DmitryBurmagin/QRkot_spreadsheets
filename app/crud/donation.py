@@ -5,7 +5,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase
 from app.models import CharityProject, Donation, User
-from app.schemas.donation import DonationCreate
 
 
 class CRUDDonation(CRUDBase):
@@ -16,21 +15,6 @@ class CRUDDonation(CRUDBase):
             select(self.model).where(self.model.user_id == user_id)
         )
         return result.scalars().all()
-
-    async def create(
-        self,
-        request_obj: DonationCreate,
-        session: AsyncSession,
-        user: Optional[User] = None
-    ) -> Union[CharityProject, Donation]:
-        """
-        Создает объект модели с возможностью привязки пользователя.
-        """
-        db_obj = self.set_user(request_obj, self.model, user)
-        session.add(db_obj)
-        await session.commit()
-        await session.refresh(db_obj)
-        return db_obj
 
     @staticmethod
     def set_user(

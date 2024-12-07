@@ -6,7 +6,7 @@ from pydantic import BaseSettings
 class Settings(BaseSettings):
     title: str = 'QRKot'
     description: str = 'Благотворительный проект, сбор средств для котиков.'
-    database_url: str = 'sqlite+aiosqlite:///./fastapi.db'
+    database_url: str = 'sqlite+aiosqlite:///./qrkot.db'
     debug: bool = True
     secret_key: str = 'SECRET'
 
