@@ -11,6 +11,8 @@ from app.core.user import current_superuser
 from app.crud.charity_project import charity_project_crud
 from app.services.google import (create_spreadsheet, set_user_permissions,
                                  spreadsheet_update_values)
+from app.api.exceptions import handle_google_api_error
+
 
 router = APIRouter()
 
@@ -40,4 +42,4 @@ async def create_projects_spreadsheet(
         )
         return spreadsheet_url
     except HTTPError as e:
-        return {'error': f'Произошла ошибка: {e}'}
+        handle_google_api_error(e)

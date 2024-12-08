@@ -3,7 +3,7 @@ from app.models.base import CommonFields
 
 
 def process_investments(
-    new_entities: list[CommonFields],
+    new_entities: CommonFields,
     existing_entities: list[CommonFields]
 ) -> list[CommonFields]:
     """
@@ -12,20 +12,19 @@ def process_investments(
     """
     updated_entities = []
 
-    for new_entity in new_entities:
-        for entity in existing_entities:
-            available_amount = min(
-                new_entity.full_amount - new_entity.invested_amount,
-                entity.full_amount - entity.invested_amount
-            )
-            new_entity.invested_amount += available_amount
-            entity.invested_amount += available_amount
+    available_amount = min(
+        new_entities.full_amount - new_entities.invested_amount,
+        existing_entities.full_amount - existing_entities.invested_amount
+    )
 
-            for obj in (entity, new_entity):
-                if obj.invested_amount == obj.full_amount:
-                    obj.fully_invested = True
-                    obj.close_date = dt.utcnow()
-                    if obj not in updated_entities:
-                        updated_entities.append(obj)
+    for obj in (existing_entities, new_entities):
+        obj.invested_amount += available_amount
+
+        if obj.invested_amount == obj.full_amount:
+            obj.fully_invested = True
+            obj.close_date = dt.utcnow()
+
+        if obj not in updated_entities:
+            updated_entities.append(obj)
 
     return updated_entities

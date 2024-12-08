@@ -53,8 +53,8 @@ async def spreadsheet_update_values(
 
     if rows > ROW_COUNT or cols > COLUMN_COUNT:
         raise ValueError(
-            f'Максимальное количество строк: {ROW_COUNT}, '
-            f'максимальное количество столбцов: {COLUMN_COUNT}.'
+            f'Максимум строк: {ROW_COUNT} (получено: {rows}), '
+            f'Максимум столбцов: {COLUMN_COUNT} (получено: {cols}).'
         )
 
     await wrapp_service.as_service_account(

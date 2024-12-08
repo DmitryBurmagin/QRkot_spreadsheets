@@ -30,9 +30,12 @@ async def create_project(
     """Создает новый благотворительный проект."""
     await validate_unique_name(project.name, session)
     new_project = await charity_project_crud.create(project, session)
-    incomplete_donations = await donation_crud.fetch_uninvested(session)
-    updated_entities = process_investments(incomplete_donations, [new_project])
-    session.add_all(updated_entities)
+    session.add_all(
+        process_investments(
+            new_project,
+            await donation_crud.fetch_uninvested(session)
+        )
+    )
     await session.commit()
     await session.refresh(new_project)
     return new_project
