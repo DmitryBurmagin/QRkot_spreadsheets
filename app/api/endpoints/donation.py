@@ -36,7 +36,7 @@ async def create_donation(
         select(CharityProject).where(CharityProject.fully_invested.is_(False))
     )
     projects = active_projects.scalars().all()
-    updated_entities = process_investments([donation], projects)
+    updated_entities = process_investments(donation, projects)
     session.add_all(updated_entities)
     await session.commit()
     await session.refresh(donation)
