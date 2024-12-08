@@ -10,10 +10,9 @@ def process_investments(
     Распределяет средства между проектами и донейшенами.
     Обновляет статус объектов и распределяет средства.
     """
-    if new_entity.fully_invested:
-        return existing_entities
-
     for entity in existing_entities:
+        if new_entity.invested_amount == new_entity.full_amount:
+            break
         available_amount = min(
             new_entity.full_amount - new_entity.invested_amount,
             entity.full_amount - entity.invested_amount
