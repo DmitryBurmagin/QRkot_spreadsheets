@@ -31,11 +31,7 @@ async def create_project(
     await validate_unique_name(project.name, session)
     new_project = await charity_project_crud.create(project, session)
     incomplete_donations = await donation_crud.fetch_uninvested(session)
-
-    updated_entities = []
-
-    for donation in incomplete_donations:
-        updated_entities.extend(process_investments(donation, [new_project]))
+    updated_entities = process_investments(incomplete_donations, [new_project])
     session.add_all(updated_entities)
     await session.commit()
     await session.refresh(new_project)

@@ -3,6 +3,7 @@ import asyncio
 from aiogoogle import Aiogoogle
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from aiogoogle.excs import HTTPError
 
 from app.core.db import get_async_session
 from app.core.google_client import get_service
@@ -38,5 +39,5 @@ async def create_projects_spreadsheet(
             spreadsheet_update_values(spreadsheet_id, projects, wrapp_services)
         )
         return spreadsheet_url
-    except Exception as e:
+    except HTTPError as e:
         return {'error': f'Произошла ошибка: {e}'}

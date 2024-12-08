@@ -1,4 +1,5 @@
 from datetime import datetime
+from copy import deepcopy
 
 from aiogoogle import Aiogoogle
 
@@ -10,12 +11,12 @@ from .constants import (COLUMN_COUNT, DATE_FORMAT, DISCOVER_DRIVE_V3,
 async def create_spreadsheet(wrapp_service: Aiogoogle):
 
     report_date = datetime.now().strftime(DATE_FORMAT)
-    spreadsheet_properties = SPREADSHEET_PROPERTIES.copy()
+    spreadsheet_properties = deepcopy(SPREADSHEET_PROPERTIES)
     spreadsheet_properties['properties']['title'] = report_date
 
     service = await wrapp_service.discover(*DISCOVER_SHEETS_V4)
     response = await wrapp_service.as_service_account(
-        service.spreadsheets.create(json=SPREADSHEET_PROPERTIES)
+        service.spreadsheets.create(json=spreadsheet_properties)
     )
     return response['spreadsheetId'], response['spreadsheetUrl']
 
@@ -40,17 +41,20 @@ async def spreadsheet_update_values(
 ) -> None:
     service = await wrapp_service.discover(*DISCOVER_SHEETS_V4)
 
-    table_values = TABLE_HEADER.copy()
+    table_values = deepcopy(TABLE_HEADER)
+    current_date = datetime.now().strftime(DATE_FORMAT)
+    table_values[0].append(current_date)
 
     for project in projects:
         table_values.append([*project.values()])
 
     rows = len(table_values)
-    cols = max(len(row) for row in table_values)
+    cols = max(map(len, table_values))
 
     if rows > ROW_COUNT or cols > COLUMN_COUNT:
         raise ValueError(
-            f'Таблица превышает допустимые размеры: {rows}x{cols} '
+            f'Максимальное количество строк: {ROW_COUNT}, '
+            f'максимальное количество столбцов: {COLUMN_COUNT}.'
         )
 
     await wrapp_service.as_service_account(

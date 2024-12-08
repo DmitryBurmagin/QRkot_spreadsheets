@@ -2,9 +2,6 @@ from app.core.config import settings
 
 DATE_FORMAT = '%Y/%m/%d %H:%M:%S'
 
-MIN_SIZE = 100
-MAX_SIZE = 1000
-
 ROW_COUNT = 100
 COLUMN_COUNT = 11
 

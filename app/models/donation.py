@@ -11,8 +11,7 @@ class Donation(Base, CommonFields):
     comment = Column(Text)
 
     def __repr__(self):
-        base_repr = super().__repr__()
         return (
-            f'{base_repr}, user_id={self.user_id}, '
+            f'{super().__repr__()}, user_id={self.user_id}, '
             f'comment_length={len(self.comment)}'
         )

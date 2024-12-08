@@ -13,9 +13,7 @@ class CharityProject(Base, CommonFields):
     description = Column(Text, nullable=False)
 
     def __repr__(self):
-        base_repr = super().__repr__()
-        description_length = len(self.description)
         return (
-            f'{base_repr}, name={self.name}, '
-            f'description_length={description_length}'
+            f'{super().__repr__()}, name={self.name}, '
+            f'description_length={len(self.description)}'
         )
